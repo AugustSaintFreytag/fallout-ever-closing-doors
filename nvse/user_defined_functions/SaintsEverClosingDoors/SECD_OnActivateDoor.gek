@@ -12,8 +12,16 @@ begin function { ref rObject, ref rAction }
 
 	; Run
 
-	PrintC "Door '%z' was activated. Marking time last opened." (GetName rObject)
+	short bIsDoorOpen = rObject.GetOpenState
 
-	Call MarkTimeLastOpenedUDF rObject
+	CallAfterFrames 60 (begin function {} 
+		short bIsDoorOpenAfterDelay = rObject.GetOpenState
+		
+		if eval bIsDoorOpenAfterDelay == bIsDoorOpen
+			return
+		endif
+
+		Call MarkTimeLastOpenedUDF rObject
+	end)
 
 end
