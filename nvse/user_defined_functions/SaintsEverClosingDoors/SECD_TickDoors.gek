@@ -6,12 +6,20 @@ begin function {}
 
 	; Config
 
-	short fMinDistance = GetINIFloatOrDefault_Cached "General:fMinDistance" "SaintsEverClosingDoors.ini" 1000.0
+	short bCloseDoors = GetINIFloatOrDefault_Cached "General:bCloseDoors" "SaintsEverClosingDoors.ini" 1
+	short bCloseDoorsWithScript = GetINIFloatOrDefault_Cached "General:bCloseDoorsWithScript" "SaintsEverClosingDoors.ini" 1
+	short bCloseDoorsWithoutPriorInteraction = GetINIFloatOrDefault_Cached "General:bCloseDoorsWithoutPriorInteraction" "SaintsEverClosingDoors.ini" 0
+
+	float fMinDistance = GetINIFloatOrDefault_Cached "General:fMinDistance" "SaintsEverClosingDoors.ini" 1000.0
 
 	float fTimeToCloseMinutes = GetINIFloatOrDefault_Cached "General:fCloseDelay" "SaintsEverClosingDoors.ini" 5.0
 	float fTimeToClose = ((1 / 24 / 60) * fTimeToCloseMinutes)
 
 	; Iteration
+
+	if bCloseDoors == 0
+		return
+	endif
 
 	array_var aDoors = PlayerREF.GetRefs 28 -1
 	short iNumDoors = Ar_Size aDoors
@@ -21,26 +29,40 @@ begin function {}
 		ref rDoor = aDoorEntry["value"]
 		short iDoorState = rDoor.GetOpenState
 
-		; PrintC "Checking door '%z' with open state %g. (%g/%g)" (GetName rDoor) iDoorState iIndex iNumDoors
+		if eval (HasKeyword rDoor "BlacklistedDoors") == 1
+			; Door has been blacklisted.
+			continue
+		endif
+
+		if eval (bCloseDoorsWithScript == 0) && (IsScripted rDoor == 1)
+			; Door has attached script.
+			continue
+		endif
 
 		if eval iDoorState != 1
+			; Door is not currently open.
 			continue
 		endif
 
 		float fDistance = Player.GetDistance2D rDoor
 
-		if eval (fDistance < iMinDistance)
-			PrintC "Skipping door '%z', too close at distance %g (min. %g)." (GetName rDoor) fDistance iMinDistance
+		if eval (fDistance < fMinDistance)
+			PrintC "Skipping door '%z', too close at distance %g (min. %g)." (GetName rDoor) fDistance fMinDistance
 			continue
 		endif
 
 		float fTimeSinceLastOpened = (Call GetTimeSinceLastOpenedUDF rDoor)
 
-		if eval fTimeSinceLastOpened < fTimeToClose
+		if eval (bCloseDoorsWithoutPriorInteraction == 0) && (fTimeSinceLastOpened == -1)
+			PrintC "Skipping door '%z', no prior interaction (time since last opened %g)." (GetName rDoor) fTimeSinceLastOpened
 			continue
 		endif
 
-		PrintC "Closing door '%z' at distance %.2f after time %.2f day(s)." (GetName rDoor) fDistance fTimeSinceLastOpened
+		if eval (fTimeSinceLastOpened == -1) || (fTimeSinceLastOpened < fTimeToClose)
+			continue
+		endif
+
+		PrintC "Closing door '%z' at distance %.2f after last opened %.2f hour(s) ago." (GetName rDoor) fDistance (fTimeSinceLastOpened / 60)
 		rDoor.SetOpenState 0
 	loop
 
