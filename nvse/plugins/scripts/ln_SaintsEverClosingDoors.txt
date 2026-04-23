@@ -1,0 +1,11 @@
+ref TickDoorsUDF = CompileScript "SaintsEverClosingDoors\SECD_TickDoors.gek"
+ref OnActivateDoorUDF = CompileScript "SaintsEverClosingDoors\SECD_OnActivateDoor.gek"
+
+; Event Handlers
+
+short iTickInterval = GetINIFloatOrDefault_Cached "General:iTickInterval" "SaintsEverClosingDoors.ini" 300
+
+SetGameMainLoopCallback TickDoorsUDF 1 iTickInterval 1
+SetEventHandler "OnActivate" OnActivateDoorUDF
+
+Print "Initialized Saint's Ever-Closing Doors event handler."

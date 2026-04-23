@@ -1,0 +1,19 @@
+begin function { ref rObject, ref rAction }
+
+	; UDFs
+
+	ref MarkTimeLastOpenedUDF = CompileScript "SaintsEverClosingDoors\SECD_MarkTimeLastOpened.gek"
+
+	; Check
+
+	if eval (GetObjectType rObject != 28)
+		return
+	endif
+
+	; Run
+
+	PrintC "Door '%z' was activated. Marking time last opened." (GetName rObject)
+
+	Call MarkTimeLastOpenedUDF rObject
+
+end

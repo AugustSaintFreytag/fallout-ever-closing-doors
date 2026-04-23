@@ -1,0 +1,8 @@
+begin function { ref rDoor }
+
+	float fCurrentTime = (GetGameDaysPassed 2282 2 10)
+	RefMapArraySetFloat "SECD_TimeLastOpenedByDoor" fCurrentTime rDoor
+
+	PrintC "Marking time last opened of door '%z' to %.2f." (GetName rDoor) fCurrentTime
+
+end

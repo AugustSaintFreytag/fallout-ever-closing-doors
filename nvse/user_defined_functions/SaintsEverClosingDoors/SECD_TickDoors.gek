@@ -1,0 +1,49 @@
+begin function {}
+
+	; UDFs
+
+	ref GetTimeSinceLastOpenedUDF = CompileScript "SaintsEverClosingDoors\SECD_GetTimeSinceLastOpened.gek"
+
+	; Config
+
+	short fMinDistance = GetINIFloatOrDefault_Cached "General:fMinDistance" "SaintsEverClosingDoors.ini" 1000.0
+
+	float fTimeToCloseMinutes = GetINIFloatOrDefault_Cached "General:fCloseDelay" "SaintsEverClosingDoors.ini" 5.0
+	float fTimeToClose = ((1 / 24 / 60) * fTimeToCloseMinutes)
+
+	; Iteration
+
+	array_var aDoors = PlayerREF.GetRefs 28 -1
+	short iNumDoors = Ar_Size aDoors
+
+	foreach array_var aDoorEntry <- aDoors
+		short iIndex = aDoorEntry["key"]
+		ref rDoor = aDoorEntry["value"]
+		short iDoorState = rDoor.GetOpenState
+
+		; PrintC "Checking door '%z' with open state %g. (%g/%g)" (GetName rDoor) iDoorState iIndex iNumDoors
+
+		if eval iDoorState != 1
+			continue
+		endif
+
+		float fDistance = Player.GetDistance2D rDoor
+
+		if eval (fDistance < iMinDistance)
+			PrintC "Skipping door '%z', too close at distance %g (min. %g)." (GetName rDoor) fDistance iMinDistance
+			continue
+		endif
+
+		float fTimeSinceLastOpened = (Call GetTimeSinceLastOpenedUDF rDoor)
+
+		if eval fTimeSinceLastOpened < fTimeToClose
+			continue
+		endif
+
+		PrintC "Closing door '%z' at distance %.2f after time %.2f day(s)." (GetName rDoor) fDistance fTimeSinceLastOpened
+		rDoor.SetOpenState 0
+	loop
+
+	let aDoors := Ar_Null
+
+end
