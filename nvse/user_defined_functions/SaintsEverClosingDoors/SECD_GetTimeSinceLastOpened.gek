@@ -2,8 +2,13 @@ begin function { ref rDoor }
 
 	float fTimeLastOpened = RefMapArrayGetFloat "SECD_TimeLastOpenedByDoor" rDoor
 	float fCurrentTime = (GetGameDaysPassed 2282 2 10)
-	float fTimeSinceLastOpened = fCurrentTime - fTimeLastOpened
 
+	if fTimeLastOpened == 0
+		SetFunctionValue -1
+		return
+	endif
+
+	float fTimeSinceLastOpened = fCurrentTime - fTimeLastOpened
 	SetFunctionValue fTimeSinceLastOpened
 
 end
