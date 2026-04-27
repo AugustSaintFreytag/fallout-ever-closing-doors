@@ -47,14 +47,14 @@ begin function {}
 		float fDistance = Player.GetDistance2D rDoor
 
 		if eval (fDistance < fMinDistance)
-			PrintC "Skipping door '%z', too close at distance %g (min. %g)." (GetName rDoor) fDistance fMinDistance
+			; PrintC "Skipping door '%z', too close at distance %g (min. %g)." (GetName rDoor) fDistance fMinDistance
 			continue
 		endif
 
 		float fTimeSinceLastOpened = (Call GetTimeSinceLastOpenedUDF rDoor)
 
 		if eval (bCloseDoorsWithoutPriorInteraction == 0) && (fTimeSinceLastOpened == -1)
-			PrintC "Skipping door '%z', no prior interaction (time since last opened %g)." (GetName rDoor) fTimeSinceLastOpened
+			; PrintC "Skipping door '%z', no prior interaction (time since last opened %g)." (GetName rDoor) fTimeSinceLastOpened
 			continue
 		endif
 
