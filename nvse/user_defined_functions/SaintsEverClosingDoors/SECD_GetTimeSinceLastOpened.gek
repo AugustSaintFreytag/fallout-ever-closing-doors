@@ -1,6 +1,6 @@
 begin function { ref rDoor }
 
-	float fTimeLastOpened = RefMapArrayGetFloat "SECD_TimeLastOpenedByDoor" rDoor
+	float fTimeLastOpened = Player.RefMapArrayGetFloat "SECD_TimeLastOpenedByDoor" rDoor
 	float fCurrentTime = (GetGameDaysPassed 2282 2 10)
 
 	if fTimeLastOpened == 0
