@@ -14,7 +14,12 @@ begin function { ref rObject, ref rAction }
 
 	short bIsDoorOpen = rObject.GetOpenState
 
-	CallAfterFrames 60 (begin function {} 
+	CallAfterFrames 60 (begin function {}
+		if eval !rObject
+			; Door may have been level changer or was unloaded.
+			return
+		endif
+
 		short bIsDoorOpenAfterDelay = rObject.GetOpenState
 		
 		if eval bIsDoorOpenAfterDelay == bIsDoorOpen
