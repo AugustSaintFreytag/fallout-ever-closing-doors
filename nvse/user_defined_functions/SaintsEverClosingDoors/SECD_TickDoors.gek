@@ -62,7 +62,7 @@ begin function {}
 			continue
 		endif
 
-		PrintC "Closing door '%z' at distance %.2f after last opened %.2f hour(s) ago." (GetName rDoor) fDistance (fTimeSinceLastOpened / 60)
+		;PrintC "Closing door '%z' at distance %.2f after last opened %.2f hour(s) ago." (GetName rDoor) fDistance (fTimeSinceLastOpened / 60)
 		rDoor.SetOpenState 0
 	loop
 
