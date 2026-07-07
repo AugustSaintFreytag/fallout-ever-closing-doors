@@ -2,7 +2,7 @@ begin function { ref rObject, ref rAction }
 
 	; UDFs
 
-	ref MarkTimeLastOpenedUDF = CompileScript "SaintsEverClosingDoors\SECD_MarkTimeLastOpened.gek"
+	ref MarkTimeLastOpenedUDF = CompileScript "SaintsEverClosingDoors\MarkTimeLastOpened.gek"
 
 	; Check
 

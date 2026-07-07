@@ -2,7 +2,7 @@ begin function {}
 
 	; UDFs
 
-	ref GetTimeSinceLastOpenedUDF = CompileScript "SaintsEverClosingDoors\SECD_GetTimeSinceLastOpened.gek"
+	ref GetTimeSinceLastOpenedUDF = CompileScript "SaintsEverClosingDoors\GetTimeSinceLastOpened.gek"
 
 	; Config
 
